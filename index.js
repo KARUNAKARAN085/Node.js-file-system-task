@@ -4,23 +4,12 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-//generate file name as created date and time
-let date = new Date();
-let filename = date.getFullYear() + '-' + (date.getMonth() + 1) + '-'+ date.getDate() + ' - ' + date.getHours() + '.' + date.getMinutes() + '.'+ date.getSeconds() + `.txt`;
-function generatefile(filename){
-    return filename;
-}
+app.get('/create', (req, res) => {
+    const currentDate = new Date();
+    const fileName = `${currentDate.toISOString().replace(/:/g, '_').replace(/-/g, '_')}.txt`;
 
-app.get( '/date/', (req, res) => {
-    const code = req.body.code;
-    
-    fs.writeFile(`./createdfiles/` + generatefile(filename),code,(err)=>{
-        if(!err){
-            res.send('File created');
-        } else{
-            res.send(err.message);
-        }
-    })
+    fs.writeFileSync(`./createdfiles/` + fileName,fileName )
+    res.send('file created')
 })
 
 //reading the files from folder
